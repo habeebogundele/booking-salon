@@ -42,6 +42,7 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
   const [step, setStep] = useState<BookingStep>('service');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [emailSent, setEmailSent] = useState(false);
   const [data, setData] = useState<BookingData>({
     service: '',
     date: '',
@@ -63,6 +64,7 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
   const resetAndClose = () => {
     setStep('service');
     setError(null);
+    setEmailSent(false);
     setData({ service: '', date: '', time: '', name: '', email: '', phone: '' });
     onClose();
   };
@@ -92,6 +94,8 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
         throw new Error(payload?.error ?? 'Unable to confirm your appointment.');
       }
 
+      const payload = await res.json();
+      setEmailSent(Boolean(payload?.emailSent));
       setStep('success');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
@@ -308,7 +312,19 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                 </div>
                 <h3 className="text-4xl font-serif text-brand-green mb-4">You&apos;re all set!</h3>
                 <p className="text-brand-dark/60 leading-relaxed mb-10 max-w-sm mx-auto">
-                  We&apos;ve received your request for <span className="font-bold text-brand-green">{data.service}</span>. A confirmation email has been sent to <span className="font-bold text-brand-green">{data.email}</span>.
+                  We&apos;ve received your request for{' '}
+                  <span className="font-bold text-brand-green">{data.service}</span>.
+                  {emailSent ? (
+                    <>
+                      {' '}A confirmation email has been sent to{' '}
+                      <span className="font-bold text-brand-green">{data.email}</span>.
+                    </>
+                  ) : (
+                    <>
+                      {' '}We&apos;ll contact you at{' '}
+                      <span className="font-bold text-brand-green">{data.email}</span> to confirm your appointment.
+                    </>
+                  )}
                 </p>
                 <button
                   onClick={resetAndClose}
