@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
+import { sendBookingEmails } from '@/lib/email';
 import Booking from '@/models/Booking';
 
 const REQUIRED_FIELDS = [
@@ -50,8 +51,21 @@ export async function POST(request: Request) {
       phone: body.phone,
     });
 
+    const emailResult = await sendBookingEmails({
+      service: booking.service,
+      date: booking.date,
+      time: booking.time,
+      name: booking.name,
+      email: booking.email,
+      phone: booking.phone,
+    });
+
     return NextResponse.json(
-      { message: 'Booking created successfully.', booking },
+      {
+        message: 'Booking created successfully.',
+        booking,
+        emailSent: emailResult.sent,
+      },
       { status: 201 },
     );
   } catch (error) {

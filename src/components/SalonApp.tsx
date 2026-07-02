@@ -308,7 +308,7 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                 </div>
                 <h3 className="text-4xl font-serif text-brand-green mb-4">You&apos;re all set!</h3>
                 <p className="text-brand-dark/60 leading-relaxed mb-10 max-w-sm mx-auto">
-                  We&apos;ve received your request for <span className="font-bold text-brand-green">{data.service}</span>. Look out for a confirmation message on {data.phone} soon.
+                  We&apos;ve received your request for <span className="font-bold text-brand-green">{data.service}</span>. A confirmation email has been sent to <span className="font-bold text-brand-green">{data.email}</span>.
                 </p>
                 <button
                   onClick={resetAndClose}
