@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import { sendBookingEmails } from '@/lib/email';
-import { isDateInPast, isDateOpen, TIME_SLOTS, MAX_BOOKINGS_PER_SLOT } from '@/lib/schedule';
+import { isDateInPast, isDateOpen, TIME_SLOTS } from '@/lib/schedule';
 import Booking from '@/models/Booking';
 
 const REQUIRED_FIELDS = [
@@ -64,15 +64,15 @@ export async function POST(request: Request) {
 
     await connectToDatabase();
 
-    const bookedCount = await Booking.countDocuments({
+    const existing = await Booking.findOne({
       date: body.date,
       time: body.time,
       status: { $in: ['pending', 'confirmed'] },
     });
 
-    if (bookedCount >= MAX_BOOKINGS_PER_SLOT) {
+    if (existing) {
       return NextResponse.json(
-        { error: 'This time slot is fully booked. Please choose another.' },
+        { error: 'This time slot is no longer available. Please choose another.' },
         { status: 409 },
       );
     }
@@ -105,6 +105,19 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error('Failed to create booking:', error);
+
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 11000
+    ) {
+      return NextResponse.json(
+        { error: 'This time slot is no longer available. Please choose another.' },
+        { status: 409 },
+      );
+    }
+
     return NextResponse.json(
       { error: 'Something went wrong while creating your booking.' },
       { status: 500 },

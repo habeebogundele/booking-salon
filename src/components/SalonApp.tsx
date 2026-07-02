@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { TIME_SLOTS } from '@/lib/schedule';
 import {
   Phone,
   Instagram,
@@ -64,7 +65,7 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
     { id: 'treatment', title: 'Natural Hair Treatment', icon: <Leaf size={20} />, price: '₦7,000+' },
   ];
 
-  const timeSlots = ['09:00 AM', '10:30 AM', '12:00 PM', '01:30 PM', '03:00 PM', '04:30 PM'];
+  const timeSlots = [...TIME_SLOTS];
 
   useEffect(() => {
     if (!data.date) {
@@ -293,7 +294,9 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                           }`}
                         >
                           {slot.time}
-                          {!slot.available && <span className="block text-[10px] mt-1 no-underline normal-case tracking-wide opacity-60">Booked</span>}
+                          {!slot.available && (
+                            <span className="block text-[10px] mt-1 no-underline normal-case tracking-wide opacity-60">Booked</span>
+                          )}
                         </button>
                       ))}
                     </div>

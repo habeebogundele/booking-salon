@@ -42,6 +42,15 @@ const BookingSchema = new Schema(
   { timestamps: true },
 );
 
+// One client per date + time slot.
+BookingSchema.index(
+  { date: 1, time: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { status: { $in: ['pending', 'confirmed'] } },
+  },
+);
+
 export type Booking = InferSchemaType<typeof BookingSchema>;
 
 const Booking =

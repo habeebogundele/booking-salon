@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import Booking from '@/models/Booking';
-import { TIME_SLOTS, isDateInPast, isDateOpen, MAX_BOOKINGS_PER_SLOT } from '@/lib/schedule';
+import { TIME_SLOTS, isDateInPast, isDateOpen } from '@/lib/schedule';
 
 export async function GET(request: Request) {
   try {
@@ -40,25 +40,16 @@ export async function GET(request: Request) {
       .select('time')
       .lean();
 
-    const counts: Record<string, number> = {};
-    for (const b of booked) {
-      counts[b.time] = (counts[b.time] ?? 0) + 1;
-    }
+    const bookedTimes = booked.map((b) => b.time);
 
     return NextResponse.json({
       date,
       open: true,
-      maxPerSlot: MAX_BOOKINGS_PER_SLOT,
-      slots: TIME_SLOTS.map((time) => {
-        const bookedCount = counts[time] ?? 0;
-        const remaining = MAX_BOOKINGS_PER_SLOT - bookedCount;
-        return {
-          time,
-          available: remaining > 0,
-          remaining,
-          bookedCount,
-        };
-      }),
+      slots: TIME_SLOTS.map((time) => ({
+        time,
+        available: !bookedTimes.includes(time),
+      })),
+      bookedTimes,
     });
   } catch (error) {
     console.error('Failed to fetch availability:', error);
