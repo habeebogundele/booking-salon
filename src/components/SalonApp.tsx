@@ -43,6 +43,11 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [emailSent, setEmailSent] = useState(false);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [slotAvailability, setSlotAvailability] = useState<
+    { time: string; available: boolean }[]
+  >([]);
+  const [dateOpen, setDateOpen] = useState(true);
   const [data, setData] = useState<BookingData>({
     service: '',
     date: '',
@@ -61,10 +66,59 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 
   const timeSlots = ['09:00 AM', '10:30 AM', '12:00 PM', '01:30 PM', '03:00 PM', '04:30 PM'];
 
+  useEffect(() => {
+    if (!data.date) {
+      setSlotAvailability([]);
+      setDateOpen(true);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function fetchAvailability() {
+      setSlotsLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`/api/bookings/availability?date=${data.date}`);
+        const payload = await res.json();
+
+        if (!res.ok) {
+          throw new Error(payload?.error ?? 'Unable to load available times.');
+        }
+
+        if (!cancelled) {
+          setDateOpen(payload.open);
+          setSlotAvailability(payload.slots ?? []);
+          setData((prev) => {
+            if (!payload.open || !payload.slots?.some((s: { available: boolean }) => s.available)) {
+              return { ...prev, time: '' };
+            }
+            if (prev.time && !payload.slots.find((s: { time: string; available: boolean }) => s.time === prev.time && s.available)) {
+              return { ...prev, time: '' };
+            }
+            return prev;
+          });
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : 'Unable to load available times.');
+          setSlotAvailability([]);
+        }
+      } finally {
+        if (!cancelled) setSlotsLoading(false);
+      }
+    }
+
+    fetchAvailability();
+    return () => { cancelled = true; };
+  }, [data.date]);
+
   const resetAndClose = () => {
     setStep('service');
     setError(null);
     setEmailSent(false);
+    setSlotAvailability([]);
+    setDateOpen(true);
     setData({ service: '', date: '', time: '', name: '', email: '', phone: '' });
     onClose();
   };
@@ -91,6 +145,14 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 
       if (!res.ok) {
         const payload = await res.json().catch(() => null);
+        if (res.status === 409 && data.date) {
+          const availRes = await fetch(`/api/bookings/availability?date=${data.date}`);
+          const avail = await availRes.json().catch(() => null);
+          if (avail?.slots) {
+            setSlotAvailability(avail.slots);
+            setData((prev) => ({ ...prev, time: '' }));
+          }
+        }
         throw new Error(payload?.error ?? 'Unable to confirm your appointment.');
       }
 
@@ -197,28 +259,55 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                   <input
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
-                    onChange={(e) => setData({ ...data, date: e.target.value })}
+                    value={data.date}
+                    onChange={(e) => setData({ ...data, date: e.target.value, time: '' })}
                     className="w-full p-4 rounded-xl border-2 border-brand-green/10 focus:border-brand-green bg-white outline-hidden font-sans uppercase tracking-widest text-sm"
                   />
                 </div>
 
+                {!dateOpen && data.date && (
+                  <p className="mb-6 text-sm font-medium text-red-600 bg-red-50 border border-red-100 rounded-xl p-4">
+                    The salon is closed on this day. Please choose another date.
+                  </p>
+                )}
+
                 <div>
                   <label className="block text-sm font-bold uppercase tracking-widest text-brand-gold mb-4">Available Slots</label>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {timeSlots.map((t) => (
-                      <button
-                        key={t}
-                        onClick={() => setData({ ...data, time: t })}
-                        className={`p-4 rounded-xl border-2 font-medium transition-all ${data.time === t ? 'bg-brand-green text-brand-beige border-brand-green' : 'bg-white text-brand-green border-brand-green/10 hover:border-brand-green/30'}`}
-                      >
-                        {t}
-                      </button>
-                    ))}
-                  </div>
+                  {slotsLoading ? (
+                    <p className="text-sm text-brand-dark/50">Loading available times…</p>
+                  ) : !data.date ? (
+                    <p className="text-sm text-brand-dark/50">Select a date to see available times.</p>
+                  ) : (
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {(slotAvailability.length > 0 ? slotAvailability : timeSlots.map((t) => ({ time: t, available: true }))).map((slot) => (
+                        <button
+                          key={slot.time}
+                          disabled={!slot.available || !dateOpen}
+                          onClick={() => setData({ ...data, time: slot.time })}
+                          className={`p-4 rounded-xl border-2 font-medium transition-all ${
+                            !slot.available || !dateOpen
+                              ? 'bg-brand-beige/50 text-brand-dark/30 border-brand-green/5 cursor-not-allowed line-through'
+                              : data.time === slot.time
+                                ? 'bg-brand-green text-brand-beige border-brand-green'
+                                : 'bg-white text-brand-green border-brand-green/10 hover:border-brand-green/30'
+                          }`}
+                        >
+                          {slot.time}
+                          {!slot.available && <span className="block text-[10px] mt-1 no-underline normal-case tracking-wide opacity-60">Booked</span>}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
+                {error && step === 'datetime' && (
+                  <p className="mt-6 text-sm font-medium text-red-600 bg-red-50 border border-red-100 rounded-xl p-4">
+                    {error}
+                  </p>
+                )}
+
                 <button
-                  disabled={!data.date || !data.time}
+                  disabled={!data.date || !data.time || !dateOpen || slotsLoading}
                   onClick={nextStep}
                   className="w-full mt-10 bg-brand-green text-brand-beige py-5 rounded-xl font-bold uppercase tracking-widest disabled:opacity-50 hover:bg-brand-green/90 transition-all shadow-lg"
                 >

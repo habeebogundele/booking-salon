@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import { sendBookingEmails } from '@/lib/email';
+import { isDateInPast, isDateOpen, TIME_SLOTS, MAX_BOOKINGS_PER_SLOT } from '@/lib/schedule';
 import Booking from '@/models/Booking';
 
 const REQUIRED_FIELDS = [
@@ -40,7 +41,41 @@ export async function POST(request: Request) {
       );
     }
 
+    if (isDateInPast(String(body.date))) {
+      return NextResponse.json(
+        { error: 'Cannot book appointments in the past.' },
+        { status: 400 },
+      );
+    }
+
+    if (!isDateOpen(String(body.date))) {
+      return NextResponse.json(
+        { error: 'The salon is closed on the selected day.' },
+        { status: 400 },
+      );
+    }
+
+    if (!(TIME_SLOTS as readonly string[]).includes(body.time)) {
+      return NextResponse.json(
+        { error: 'The selected time slot is not valid.' },
+        { status: 400 },
+      );
+    }
+
     await connectToDatabase();
+
+    const bookedCount = await Booking.countDocuments({
+      date: body.date,
+      time: body.time,
+      status: { $in: ['pending', 'confirmed'] },
+    });
+
+    if (bookedCount >= MAX_BOOKINGS_PER_SLOT) {
+      return NextResponse.json(
+        { error: 'This time slot is fully booked. Please choose another.' },
+        { status: 409 },
+      );
+    }
 
     const booking = await Booking.create({
       service: body.service,
