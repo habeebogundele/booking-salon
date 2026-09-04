@@ -792,49 +792,49 @@ const Ethos = () => {
 
 const Contact = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   return (
-    <section id="contact" className="py-24 bg-brand-beige/30 relative">
+    <section id="contact" className="py-14 sm:py-20 lg:py-24 bg-brand-beige/30 relative">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="bg-white rounded-[4rem] shadow-2xl overflow-hidden grid lg:grid-cols-2 border border-brand-green/5">
-          <div className="p-10 lg:p-20">
-            <h2 className="text-sm font-black text-brand-gold uppercase tracking-[0.4em] mb-4">Talk to us</h2>
-            <h3 className="text-5xl font-serif text-brand-green mb-12">Connect With <br /> The Studio</h3>
+        <div className="bg-white rounded-[2rem] sm:rounded-[3rem] lg:rounded-[4rem] shadow-2xl overflow-hidden grid lg:grid-cols-2 border border-brand-green/5">
+          <div className="p-6 sm:p-10 lg:p-20">
+            <h2 className="text-xs sm:text-sm font-black text-brand-gold uppercase tracking-[0.3em] sm:tracking-[0.4em] mb-3 sm:mb-4">Talk to us</h2>
+            <h3 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-brand-green mb-8 sm:mb-10 lg:mb-12">Connect With <br /> The Studio</h3>
 
-            <div className="space-y-10">
-              <a href="tel:08107651999" className="flex items-center gap-8 group">
-                <div className="w-16 h-16 bg-brand-beige rounded-3xl flex items-center justify-center text-brand-green shrink-0 group-hover:bg-brand-green group-hover:text-white transition-all shadow-sm">
-                  <Phone size={28} />
+            <div className="space-y-6 sm:space-y-8 lg:space-y-10">
+              <a href="tel:08107651999" className="flex items-center gap-4 sm:gap-6 lg:gap-8 group">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-brand-beige rounded-2xl sm:rounded-3xl flex items-center justify-center text-brand-green shrink-0 group-hover:bg-brand-green group-hover:text-white transition-all shadow-sm">
+                  <Phone className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" />
                 </div>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-brand-gold mb-1">Direct Hotline</p>
-                  <p className="text-2xl font-serif text-brand-dark group-hover:text-brand-green transition-colors">0810 765 1999</p>
-                  <p className="text-sm text-brand-dark/40 font-medium font-sans">Available 9am — 6pm</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-brand-gold mb-1">Direct Hotline</p>
+                  <p className="text-xl sm:text-2xl font-serif text-brand-dark group-hover:text-brand-green transition-colors break-words">0810 765 1999</p>
+                  <p className="text-xs sm:text-sm text-brand-dark/40 font-medium font-sans">Available 9am — 6pm</p>
                 </div>
               </a>
 
-              <a href="https://instagram.com/naturallyrooted_salon" target="_blank" rel="noreferrer" className="flex items-center gap-8 group">
-                <div className="w-16 h-16 bg-brand-beige rounded-3xl flex items-center justify-center text-brand-green shrink-0 group-hover:bg-pink-600 group-hover:text-white transition-all shadow-sm">
-                  <Instagram size={28} />
+              <a href="https://instagram.com/naturallyrooted_salon" target="_blank" rel="noreferrer" className="flex items-center gap-4 sm:gap-6 lg:gap-8 group">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-brand-beige rounded-2xl sm:rounded-3xl flex items-center justify-center text-brand-green shrink-0 group-hover:bg-pink-600 group-hover:text-white transition-all shadow-sm">
+                  <Instagram className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" />
                 </div>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-brand-gold mb-1">Our Portfolio</p>
-                  <p className="text-2xl font-serif text-brand-dark group-hover:text-brand-green transition-colors">@naturallyrooted_salon</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-brand-gold mb-1">Our Portfolio</p>
+                  <p className="text-base sm:text-xl xl:text-2xl font-serif text-brand-dark group-hover:text-brand-green transition-colors break-words">@naturallyrooted_salon</p>
                 </div>
               </a>
 
-              <div className="flex items-center gap-8 group">
-                <div className="w-16 h-16 bg-brand-beige rounded-3xl flex items-center justify-center text-brand-green shrink-0 shadow-sm">
-                  <MapPin size={28} />
+              <div className="flex items-center gap-4 sm:gap-6 lg:gap-8 group">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-brand-beige rounded-2xl sm:rounded-3xl flex items-center justify-center text-brand-green shrink-0 shadow-sm">
+                  <MapPin className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" />
                 </div>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-brand-gold mb-1">Location</p>
-                  <p className="text-2xl font-serif text-brand-dark">UI, Ibadan</p>
-                  <p className="text-sm text-brand-dark/40 font-medium">The Premium Hair Destination</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-brand-gold mb-1">Location</p>
+                  <p className="text-xl sm:text-2xl font-serif text-brand-dark">UI, Ibadan</p>
+                  <p className="text-xs sm:text-sm text-brand-dark/40 font-medium">The Premium Hair Destination</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-brand-green p-12 lg:p-20 flex flex-col justify-center items-center text-center text-brand-beige relative overflow-hidden group">
+          <div className="bg-brand-green p-8 sm:p-12 lg:p-20 flex flex-col justify-center items-center text-center text-brand-beige relative overflow-hidden group">
             <div className="absolute inset-0 opacity-20 pointer-events-none group-hover:scale-110 transition-transform duration-[5s]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -845,17 +845,17 @@ const Contact = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
               />
             </div>
 
-            <div className="relative z-10">
-              <div className="w-24 h-24 bg-brand-gold rounded-full flex items-center justify-center text-white mx-auto mb-10 shadow-3xl animate-bounce-slow">
-                <Calendar size={36} />
+            <div className="relative z-10 w-full flex flex-col items-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-brand-gold rounded-full flex items-center justify-center text-white mx-auto mb-6 sm:mb-8 lg:mb-10 shadow-3xl animate-bounce-slow">
+                <Calendar className="w-8 h-8 lg:w-9 lg:h-9" />
               </div>
-              <h4 className="text-5xl font-serif mb-6 text-white leading-tight">Ready to <br /> Thrive?</h4>
-              <p className="text-brand-beige/70 mb-12 max-w-sm mx-auto text-lg italic serif-text">
+              <h4 className="text-3xl sm:text-4xl lg:text-5xl font-serif mb-4 sm:mb-6 text-white leading-tight">Ready to <br /> Thrive?</h4>
+              <p className="text-brand-beige/70 mb-8 sm:mb-10 lg:mb-12 max-w-sm mx-auto text-sm sm:text-base lg:text-lg italic serif-text">
                 &quot;Experience professional hair care that prioritizes your scalp health and hair growth.&quot;
               </p>
               <button
                 onClick={onOpenBooking}
-                className="bg-brand-gold text-brand-beige px-14 py-6 rounded-full text-xl font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-brand-green transition-all shadow-2xl active:scale-95"
+                className="w-full max-w-xs sm:max-w-none sm:w-auto bg-brand-gold text-brand-beige px-6 py-4 sm:px-10 sm:py-5 lg:px-12 xl:px-14 rounded-full text-xs sm:text-sm lg:text-lg xl:text-xl font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] hover:bg-white hover:text-brand-green transition-all shadow-2xl active:scale-95"
               >
                 Secure My Slot
               </button>
