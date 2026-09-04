@@ -504,13 +504,33 @@ const Navbar = ({ onOpenBooking, onNavigate }: { onOpenBooking: () => void; onNa
   );
 };
 
+/**
+ * Hero slideshow (Unsplash, free licence). Each image is paired with its caption.
+ * 1. Natural afro portrait — Raissa for Good Faces Agency (unsplash.com/photos/62wQhEghaw0)
+ * 2. Braided protective style on a green backdrop — Dwayne Joe, Nairobi (unsplash.com/photos/iJmMxExrGEQ)
+ * 3. Stylist blow-drying a client in the salon — Delfina Pan (unsplash.com/photos/wJoB8D3hnzc)
+ */
+const HERO_SLIDES = [
+  {
+    src: 'https://images.unsplash.com/photo-1632765866070-3fadf25d3d5b?auto=format&fit=crop&q=80&w=1200',
+    alt: 'Woman with a full, healthy natural afro',
+    caption: 'Your crown, our craft. Personalized attention for every strand.',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1728231808086-3b67659b1feb?auto=format&fit=crop&q=80&w=1200',
+    alt: 'Side profile of a woman with long braids against a green wall',
+    caption: 'Organic blends for growth and unparalleled moisture retention.',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1605497788044-5a32c7078486?auto=format&fit=crop&q=80&w=1200',
+    alt: "Stylist blow-drying a client's hair in the salon",
+    caption: 'Beautiful styling that protects the future of your hair.',
+  },
+];
+
 const Hero = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const slides = [
-    'https://images.unsplash.com/photo-1620331311520-246422fd82f9?auto=format&fit=crop&q=80&w=1200',
-    'https://images.unsplash.com/photo-1621243804936-775306a8f2e3?auto=format&fit=crop&q=80&w=1200',
-    'https://images.unsplash.com/photo-1605497788044-5a32c7078486?auto=format&fit=crop&q=80&w=1200',
-  ];
+  const slides = HERO_SLIDES;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -589,8 +609,8 @@ const Hero = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 1.5, ease: 'circOut' }}
-                src={slides[currentSlide]}
-                alt="Natural Hair Mastery"
+                src={slides[currentSlide].src}
+                alt={slides[currentSlide].alt}
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
@@ -605,9 +625,7 @@ const Hero = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
                 className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl"
               >
                 <p className="text-white text-xl italic serif-text font-light leading-relaxed">
-                  {currentSlide === 0 && 'Your crown, our craft. Personalized attention for every strand.'}
-                  {currentSlide === 1 && 'Organic blends for growth and unparalleled moisture retention.'}
-                  {currentSlide === 2 && 'Beautiful styling that protects the future of your hair.'}
+                  {slides[currentSlide].caption}
                 </p>
               </motion.div>
             </div>
@@ -902,6 +920,22 @@ const Footer = ({ onNavigate }: { onNavigate: (v: 'home' | 'privacy' | 'terms') 
   );
 };
 
+/**
+ * Before/after slider images (Unsplash, free licence).
+ * Before — stylist washing a client's hair at the basin — Adam Winger (unsplash.com/photos/WDmvpGs2060)
+ * After  — sleek braided ponytail on a gold backdrop — Jessica Felicio (unsplash.com/photos/QS9ZX5UnS14)
+ */
+const BEFORE_AFTER_IMAGES = {
+  before: {
+    src: 'https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?auto=format&fit=crop&q=80&w=1200',
+    alt: "Stylist washing a client's hair at the salon basin",
+  },
+  after: {
+    src: 'https://images.unsplash.com/photo-1527203561188-dae1bc1a417f?auto=format&fit=crop&q=80&w=1200',
+    alt: 'Profile of a woman with a sleek braided ponytail against a gold background',
+  },
+};
+
 const BeforeAfterSlider = () => {
   const [sliderPos, setSliderPos] = useState(50);
 
@@ -925,8 +959,8 @@ const BeforeAfterSlider = () => {
       <div className="absolute inset-0">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?auto=format&fit=crop&q=80&w=1200"
-          alt="Before"
+          src={BEFORE_AFTER_IMAGES.before.src}
+          alt={BEFORE_AFTER_IMAGES.before.alt}
           className="w-full h-full object-cover grayscale brightness-75"
           referrerPolicy="no-referrer"
         />
@@ -937,8 +971,8 @@ const BeforeAfterSlider = () => {
       <div className="absolute inset-0 overflow-hidden" style={{ width: `${sliderPos}%` }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://images.unsplash.com/photo-1620331311520-246422fd82f9?auto=format&fit=crop&q=80&w=1200"
-          alt="After"
+          src={BEFORE_AFTER_IMAGES.after.src}
+          alt={BEFORE_AFTER_IMAGES.after.alt}
           className="h-full object-cover max-w-none"
           style={{ width: `calc(100vw * 100 / ${sliderPos})` }}
           referrerPolicy="no-referrer"
